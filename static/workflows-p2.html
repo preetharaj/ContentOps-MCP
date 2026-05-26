@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Workflows - Content-ops Orchestrator</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+<div class="sidebar">
+<div class="sidebar-header"><h1>Content-ops</h1><p class="sidebar-subtitle">Orchestrator</p></div>
+<nav class="sidebar-nav">
+<a href="/static/index.html" class="nav-link">🏠 Home</a>
+<a href="/static/workflows.html" class="nav-link active">⚙️ Workflows</a>
+<a href="/static/runs.html" class="nav-link">📊 Runs</a>
+</nav></div>
+
+<main class="main-content"><div class="container">
+<div class="page-header">
+<h1>MCP Workflows</h1>
+<p class="page-subtitle">Execute MCP orchestration workflows</p>
+</div>
+
+<section class="card">
+<h2>Available Workflows</h2>
+
+<div id="workflowsList" class="workflows-list">
+
+<div class="workflow-item">
+<h3>Notion to Content Stack</h3>
+<p>Trigger: Notion → WordPress → Slack → Email</p>
+<button class="button button-primary" onclick="runWorkflow('notion-to-content-stack')">Run Workflow</button>
+</div>
+
+<div class="workflow-item">
+<h3>Notion to Content Stack with Email Failure</h3>
+<p>Failure testing workflow</p>
+<button class="button button-primary" onclick="runWorkflow('notion-to-content-stack-with-email-failure')">Run Workflow</button>
+</div>
+
+<div class="workflow-item">
+<h3>Editorial Multi Publish</h3>
+<p>Trigger: Notion → WordPress → Slack → Email</p>
+<button class="button button-primary" onclick="runWorkflow('editorial-multi-publish')">Run Workflow</button>
+</div>
+
+</div>
+</section>
+
+<section class="card form-section" id="executionSection">
+<h2>Execute Custom Workflow</h2>
+<textarea id="workflowYaml" rows="12"></textarea>
+</section>
+
+<section class="card" id="resultsSection" style="display:none"></section>
+
+</div></main>
+
+<script>
+const WORKFLOWS = {
+
+'notion-to-content-stack':{
+workflow:'notion-to-content-stack',
+trigger:{
+server:'notion-mcp',
+tool:'get_pages',
+params:{database_id:'$NOTION_EDITORIAL_DB'}
+},
+steps:[
+{
+server:'wordpress-mcp',
+tool:'create_draft',
+input_map:{
+title:'{trigger.pages[0].title}',
+content:'{trigger.pages[0].body}'
+}
+},
+{
+server:'slack-mcp',
+tool:'post_message',
+input_map:{
+channel:'#content-team',
+text:'New draft published: {steps[0].url}'
+}
+},
+{
+server:'resend-mcp',
+tool:'send_email',
+input_map:{
+subject:'Content Summary: {steps[0].slug}',
+body:'Draft published at {steps[0].url}'
+}
+}
+]},
+
+'notion-to-content-stack-with-email-failure':{
+workflow:'notion-to-content-stack-with-email-failure',
+trigger:{
+server:'notion-mcp',
+tool:'get_pages',
+params:{database_id:'$NOTION_EDITORIAL_DB'}
+},
+steps:[
+{
+server:'wordpress-mcp',
+tool:'create_draft',
+input_map:{
+title:'{trigger.pages[0].title}',
+content:'{trigger.pages[0].body}'
+}
+},
+{
+server:'slack-mcp',
+tool:'post_message',
+input_map:{
+channel:'#content-team',
+text:'New draft published: {steps[0].url}'
+}
+},
+{
+server:'resend-mcp',
+tool:'send_email',
+input_map:{
+subject:'Broken Email',
+body:'Missing required params'
+}
+}
+]},
+
+'editorial-multi-publish':{
+workflow:'editorial-multi-publish',
+trigger:{
+server:'notion-mcp',
+tool:'get_pages',
+params:{database_id:'$NOTION_EDITORIAL_DB'}
+},
+steps:[
+{
+server:'wordpress-mcp',
+tool:'create_draft',
+input_map:{
+title:'{trigger.pages[0].title}',
+content:'{trigger.pages[0].body}'
+}
+},
+{
+server:'slack-mcp',
+tool:'post_message',
+input_map:{
+channel:'#content-team',
+text:'New draft created: {steps[0].url}'
+}
+},
+{
+server:'resend-mcp',
+tool:'send_email',
+input_map:{
+to:'team@example.com',
+subject:'Editorial Summary: {steps[0].slug}',
+body:'Title: {trigger.pages[0].title}\nURL:{steps[0].url}'
+}
+}
+]}
+};
+
+</script>
+</body>
+</html>

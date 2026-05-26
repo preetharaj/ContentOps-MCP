@@ -1,0 +1,131 @@
+Test Case 1: Create a Basic Workflow
+Inputs:
+Workflow Name: Notion to Blog
+Enable this workflow: ✓ (checked)
+Trigger Source: Notion
+Trigger Event: Page Created
+Steps:
+Step 1: App = blog, Action = create_draft
+Step 2: App = slack, Action = notify_team
+Step 3: App = email, Action = send_summary
+Expected Results:
+✅ Success alert: "Workflow created successfully!"
+Form resets to blank
+New workflow appears in "Existing Workflows" section below
+Workflow shows:
+Name: Notion to Blog
+Status badge: ✓ Enabled (green)
+Trigger: notion → page_created
+Steps: blog.create_draft, slack.notify_team, email.send_summary
+Button: "Trigger Now"
+Test Case 2: Create Workflow with Disabled State
+Inputs:
+Workflow Name: Draft Workflow
+Enable this workflow: ☐ (unchecked)
+Trigger Source: Notion
+Trigger Event: Page Created
+Steps: 1 step (blog.create_draft)
+Expected Results:
+✅ Workflow created
+Status badge: ✗ Disabled (gray)
+Cannot be auto-triggered, but can be manually triggered via UI
+Test Case 3: Duplicate Workflow Name (Error)
+Inputs:
+Workflow Name: Notion to Blog (same as Test Case 1)
+All other fields same as Test Case 1
+Expected Results:
+❌ Error alert: "Error: Workflow with this name already exists"
+Workflow NOT created
+Form retains all data
+Test Case 4: Trigger Workflow Manually
+Inputs:
+Click "Trigger Now" button on existing workflow
+Expected Results:
+✅ Alert: "Workflow triggered! Run ID: 1"
+Navigate to Runs page
+New run appears in "Recent Runs" with:
+Status: ⟳ Running (blue) → changes to ✓ Completed (green) or ✕ Failed (red)
+Started: timestamp
+Ended: timestamp (after completion)
+Steps: 3 items showing status
+Test Case 5: Monitor Run Steps
+Expected Results (on Runs page):
+Each run shows step-by-step breakdown:
+
+Or if error occurs:
+
+Test Case 6: Add Multiple Steps Dynamically
+Inputs:
+Click "+ Add Step" button
+New STEP 2 appears
+Set: App = slack, Action = notify_team
+Click "+ Add Step" again
+New STEP 3 appears
+Set: App = email, Action = send_summary
+Expected Results:
+✅ Each step renders with:
+Step number (STEP 1, STEP 2, STEP 3)
+App dropdown
+Action input field
+"Remove" button for that step
+Test Case 7: Remove a Step
+Inputs:
+Click "Remove" button on STEP 2
+Expected Results:
+✅ STEP 2 is removed
+Remaining steps auto-renumbered (STEP 1, STEP 2)
+Form still valid for submission
+Test Case 8: List Workflows (Empty State)
+Setup: Fresh database with no workflows
+Expected Results:
+"Existing Workflows" section shows:
+Test Case 9: List Workflows (Multiple Workflows)
+Setup: 3 workflows created
+Expected Results:
+Each workflow card shows:
+Name (as header)
+Status badge (Enabled/Disabled)
+Trigger: notion → page_created
+Steps: 3 steps (count and list)
+Trigger Now button
+Example Display:
+Test Case 10: Real-Time Auto-Refresh on Runs Page
+Inputs:
+Trigger a workflow
+Immediately go to Runs page
+Watch the run status update
+Expected Results:
+Status: ⟳ Running (blue)
+Steps: Show ◉ Pending → ⟳ Running → ✓ Completed
+Page auto-refreshes every 5 seconds
+Status transitions visible in real-time
+Test Case 11: View Run Details
+Expected Results per Run:
+Or with error:
+
+Test Case 12: Form Validation (Missing Fields)
+Inputs:
+Workflow Name: (empty)
+Click "Create Workflow"
+Expected Results:
+❌ Form shows browser validation error
+Message: "This field is required"
+Workflow NOT created
+Test Case 13: API Call Verification (POST /workflows)
+Expected Request Body:
+Expected Response:
+Test Case 14: API Call Verification (GET /runs)
+Expected Response:
+Quick Testing Checklist
+Test	Action	Expected
+✅ Create workflow	Fill form, click Create	Success alert, workflow appears
+✅ Trigger Now	Click button	Run ID alert, run appears on Runs page
+✅ View Run	Go to Runs	Steps show status (✓/⟳/✕)
+✅ Add Step	Click "+ Add Step"	New step row appears
+✅ Remove Step	Click Remove	Step disappears
+✅ Duplicate name	Create with same name	Error: "already exists"
+✅ Auto-refresh	Watch Runs page	Refreshes every 5 seconds
+✅ Empty workflows	Fresh DB	"No workflows yet" message
+Pro Tip: Open browser DevTools (F12 → Network tab) to verify all API calls match the test cases above. 🚀
+
+Claude Haiku 4.5 • 1x

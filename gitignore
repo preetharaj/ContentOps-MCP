@@ -1,0 +1,109 @@
+# === Python ===
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+eggs/
+parts/
+var/
+sdist/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+.installed.cfg
+MANIFEST
+
+# === Virtual environments ===
+venv/
+.venv/
+env/
+.env/
+ENV/
+env.bak/
+venv.bak/
+
+# === Environment variables ===
+.env
+.env.*
+!.env.example
+
+# === Database ===
+*.db
+*.sqlite
+*.sqlite3
+contentops.db
+
+# === FastAPI / Uvicorn ===
+*.pid
+
+# === Testing ===
+.pytest_cache/
+.coverage
+coverage.xml
+htmlcov/
+.tox/
+.nox/
+nosetests.xml
+test-results/
+
+# === Type checking ===
+.mypy_cache/
+.dmypy.json
+dmypy.json
+.pytype/
+
+# === Jupyter ===
+.ipynb_checkpoints
+*.ipynb
+
+# === IDE ===
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# === Logs ===
+*.log
+logs/
+*.out
+
+# === Node (if frontend tooling added later) ===
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# === Docs build ===
+docs/_build/
+site/
+
+# === Demo artifacts ===
+docs/demo.gif
+*.gif
+*.mp4
+*.webm
+
+# === MCP server runtime ===
+mcp_servers/**/*.pid
+mcp_servers/**/*.log
+
+# === Spec / temp outputs ===
+spec/*.generated.*
+*.tmp
+*.bak
+
+# === OS ===
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Desktop.ini

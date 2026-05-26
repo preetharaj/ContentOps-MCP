@@ -1,0 +1,53 @@
+{
+  "test_cases": [
+    {
+      "name": "slack-mcp:post_message - Valid call",
+      "description": "Post a message to a Slack channel",
+      "server": "slack-mcp",
+      "endpoint": "POST /use_tool",
+      "request": {
+        "name": "post_message",
+        "input": {
+          "channel": "#content-team",
+          "text": "New draft published: https://example.com/draft/editorial-calendar-page"
+        }
+      },
+      "expected_output": {
+        "tool": "post_message",
+        "output": {
+          "ok": true,
+          "ts": "1234567890.123456"
+        }
+      }
+    },
+    {
+      "name": "slack-mcp:post_message - Missing channel",
+      "description": "Error case: missing required parameter",
+      "server": "slack-mcp",
+      "endpoint": "POST /use_tool",
+      "request": {
+        "name": "post_message",
+        "input": {
+          "text": "Message without channel"
+        }
+      },
+      "expected_status": 400,
+      "expected_error": "Missing channel or text"
+    },
+    {
+      "name": "slack-mcp:post_message - Tool not found",
+      "description": "Error case: invalid tool name",
+      "server": "slack-mcp",
+      "endpoint": "POST /use_tool",
+      "request": {
+        "name": "send_dm",
+        "input": {
+          "channel": "#content-team",
+          "text": "Test message"
+        }
+      },
+      "expected_status": 400,
+      "expected_error": "Tool send_dm not found"
+    }
+  ]
+}

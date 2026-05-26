@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Runs - Content-ops Orchestrator</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <h1>Content-ops</h1>
+            <p class="sidebar-subtitle">Orchestrator</p>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="/static/index.html" class="nav-link">
+                <span class="nav-icon">🏠</span>
+                <span>Home</span>
+            </a>
+            <a href="/static/workflows.html" class="nav-link">
+                <span class="nav-icon">⚙️</span>
+                <span>Workflows</span>
+            </a>
+            <a href="/static/runs.html" class="nav-link active">
+                <span class="nav-icon">📊</span>
+                <span>Runs</span>
+            </a>
+        </nav>
+    </div>
+
+    <main class="main-content">
+        <div class="container">
+            <div class="page-header">
+                <h1>Workflow Runs</h1>
+                <p class="page-subtitle">Monitor and review workflow execution history</p>
+            </div>
+
+            <!-- Runs List -->
+            <section class="card">
+                <div class="card-header">
+                    <h2>Recent Runs</h2>
+                    <button id="refreshBtn" class="button button-small button-secondary">↻ Refresh</button>
+                </div>
+                <div id="runsList" class="runs-list">
+                    <p class="loading">Loading runs...</p>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <script src="/static/js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            loadRuns();
+            document.getElementById('refreshBtn').addEventListener('click', loadRuns);
+            // Auto-refresh every 5 seconds
+            setInterval(loadRuns, 5000);
+        });
+
+        async function loadRuns() {
+            try {
+                const runsData = await listRuns();
+                
+                const list = document.getElementById('runsList');
+                if (!runsData || runsData.length === 0) {
+                    list.innerHTML = '<p class="empty-state">No runs yet. Execute a workflow to get started.</p>';
+                    return;
+                }
+
+                list.innerHTML = runsData.reverse().map(run => `
+                    <div class="run-item">
+                        <div class="run-header">
+                            <div>
+                                <h3>Run ${run.id.substring(0, 8)}...</h3>
+                                <p class="run-workflow">Workflow: ${run.workflow}</p>
+                            </div>
+                            <span class="status-badge ${getStatusClass(run.status)}">
+                                ${run.status}
+                            </span>
+                        </div>
+                        <div class="run-meta">
+                            <p><strong>Steps:</strong> ${run.steps.length}</p>
+                            ${run.error ? `<p class="error"><strong>Error:</strong> ${run.error}</p>` : ''}
+                        </div>
+                        <div class="run-steps">
+                            ${run.steps.map((step, idx) => `
+                                <div class="run-step ${step.status}">
+                                    <span class="step-badge">Step ${idx + 1}</span>
+                                    <strong>${step.server}::</strong><span>${step.tool}</span>
+                                    <span class="step-status-text">${step.status}</span>
+                                    ${step.error ? `<span class="step-error">${step.error}</span>` : ''}
+                                </div>
+                            `).join('')}
+                        </div>
+                        <div class="run-actions">
+                            <button class="button button-secondary" onclick="viewRunDetails('${run.id}')">
+                                View Details
+                            </button>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (error) {
+                document.getElementById('runsList').innerHTML = `
+                    <p class="error">Error loading runs: ${error.message}</p>
+                `;
+            }
+        }
+
+        async function viewRunDetails(runId) {
+            try {
+                const trace = await getRunTrace(runId);
+                const modal = document.createElement('div');
+                modal.className = 'modal-overlay';
+                modal.innerHTML = `
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h2>Run Trace: ${runId.substring(0, 12)}...</h2>
+                            <button class="modal-close" onclick="this.closest('.modal-overlay').remove()">✕</button>
+                        </div>
+                        <div class="modal-body">
+                            <pre>${JSON.stringify(trace, null, 2)}</pre>
+                        </div>
+                    </div>
+                `;
+                document.body.appendChild(modal);
+            } catch (error) {
+                alert('Failed to load trace: ' + error.message);
+            }
+        }
+    </script>
+</body>
+</html>

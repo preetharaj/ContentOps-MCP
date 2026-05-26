@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Workflows - Content-ops Orchestrator</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <h1>Content-ops</h1>
+            <p class="sidebar-subtitle">Orchestrator</p>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="/static/index.html" class="nav-link">
+                <span class="nav-icon">🏠</span>
+                <span>Home</span>
+            </a>
+            <a href="/static/workflows.html" class="nav-link active">
+                <span class="nav-icon">⚙️</span>
+                <span>Workflows</span>
+            </a>
+            <a href="/static/runs.html" class="nav-link">
+                <span class="nav-icon">📊</span>
+                <span>Runs</span>
+            </a>
+        </nav>
+    </div>
+
+    <main class="main-content">
+        <div class="container">
+            <div class="page-header">
+                <h1>MCP Workflows</h1>
+                <p class="page-subtitle">Execute content orchestration workflows with MCP servers</p>
+            </div>
+
+            <!-- Available Workflows -->
+            <section class="card">
+                <h2>Available Workflows</h2>
+                <div id="workflowsList" class="workflows-list">
+                    <div class="workflow-item">
+                        <div class="workflow-header">
+                            <h3>Notion to Content Stack</h3>
+                            <span class="workflow-tag">happy-path</span>
+                        </div>
+                        <p class="workflow-description">
+                            Trigger: Notion page created<br>
+                            Steps: WordPress (draft) → Slack (notify) → Resend (email)
+                        </p>
+                        <div class="workflow-actions">
+                            <button class="button button-primary" onclick="runWorkflow('notion-to-content-stack')">
+                                Run Workflow
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="workflow-item">
+                        <div class="workflow-header">
+                            <h3>Notion to Content Stack with Email Failure</h3>
+                            <span class="workflow-tag">test-failure</span>
+                        </div>
+                        <p class="workflow-description">
+                            Tests error handling when email parameters are incomplete.
+                        </p>
+                        <div class="workflow-actions">
+                            <button class="button button-primary" onclick="runWorkflow('notion-to-content-stack-with-email-failure')">
+                                Run Workflow
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Workflow Execution Form -->
+            <section class="card form-section" id="executionSection" style="display: none;">
+                <h2>Execute Custom Workflow</h2>
+                <form id="workflowForm" class="workflow-form">
+                    <div class="form-group">
+                        <label for="workflowYaml">Workflow YAML</label>
+                        <textarea id="workflowYaml" name="workflowYaml" rows="20" placeholder="Paste workflow YAML here" required></textarea>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="button button-primary">Execute Workflow</button>
+                        <button type="reset" class="button button-ghost">Clear</button>
+                    </div>
+                </form>
+            </section>
+
+            <!-- Execution Results -->
+            <section class="card" id="resultsSection" style="display: none;">
+                <h2>Execution Results</h2>
+                <div id="executionResults" class="execution-results">
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <script src="/static/js/main.js"></script>
+    <script>
+        // Predefined workflows
+        const WORKFLOWS = {
+            'notion-to-content-stack': {
+                workflow: 'notion-to-content-stack',
+                trigger: {
+                    server: 'notion-mcp',
+                    tool: 'get_pages',
+                    params: {
+                        database_id: '$NOTION_EDITORIAL_DB'
+                    }
+                },
+                steps: [
+                    {
+                        server: 'wordpress-mcp',
+                        tool: 'create_draft',
+                        input_map: {
+                            title: 'trigger.pages[0].title',
+                            content: 'trigger.pages[0].body'
+                        }
+                    },
+                    {
+                        server: 'slack-mcp',
+                        tool: 'post_message',
+                        input_map: {
+                            channel: '#content-team',
+                            text: 'New draft published: {steps[0].url}'
+                        }
+                    },
+                    {
+                        server: 'resend-mcp',
+                        tool: 'send_email',
+                        input_map: {
+                            subject: 'Content Summary: {steps[0].slug}',
+                            body: 'Draft published at {steps[0].url}'
+                        }
+                    }
+                ]
+            },
+            'notion-to-content-stack-with-email-failure': {
+                workflow: 'notion-to-content-stack-with-email-failure',
+                trigger: {
+                    server: 'notion-mcp',
+                    tool: 'get_pages',
+                    params: {
+                        database_id: '$NOTION_EDITORIAL_DB'
+                    }
+                },
+                steps: [
+                    {
+                        server: 'wordpress-mcp',
+                        tool: 'create_draft',
+                        input_map: {
+                            title: 'trigger.pages[0].title',
+                            content: 'trigger.pages[0].body'
+                        }
+                    },
+                    {
+                        server: 'slack-mcp',
+                        tool: 'post_message',
+                        input_map: {
+                            channel: '#content-team',
+                            text: 'New draft published: {steps[0].url}'
+                        }
+                    },
+                    {
+                        server: 'resend-mcp',
+                        tool: 'send_email',
+                        input_map: {
+                            subject: 'Content Summary: {steps[0].slug}',
+                            body: 'Draft published at {steps[0].url}',
+                            to: 'team@example.com'
+                        }
+                    }
+                ]
+            }
+        };
+
+        async function runWorkflow(workflowId) {
+            const workflow = WORKFLOWS[workflowId];
+            if (!workflow) {
+                alert('Workflow not found');
+                return;
+            }
+
+            const resultsSection = document.getElementById('resultsSection');
+            const executionResults = document.getElementById('executionResults');
+            
+            try {
+                executionResults.innerHTML = '<p class="loading">Executing workflow...</p>';
+                resultsSection.style.display = 'block';
+                
+                const result = await executeWorkflow(workflow);
+                
+                executionResults.innerHTML = `
+                    <div class="run-result success">
+                        <h3>✓ Workflow Executed Successfully</h3>
+                        <p><strong>Run ID:</strong> ${result.id}</p>
+                        <p><strong>Status:</strong> ${result.status}</p>
+                        <p><strong>Steps Completed:</strong> ${result.steps.length}</p>
+                        <div class="steps-summary">
+                            ${result.steps.map((step, idx) => `
+                                <div class="step-summary ${step.status}">
+                                    <strong>Step ${idx + 1}:</strong> ${step.server}::${step.tool}
+                                    <span class="step-status">${step.status}</span>
+                                    ${step.tool_result && step.tool_result.output ? `
+                                        <pre class="step-output">${JSON.stringify(step.tool_result.output, null, 2)}</pre>
+                                    ` : ''}
+                                </div>
+                            `).join('')}
+                        </div>
+                        <button class="button button-secondary" onclick="viewRunTrace('${result.id}')">
+                            View Full Trace
+                        </button>
+                    </div>
+                `;
+            } catch (error) {
+                executionResults.innerHTML = `
+                    <div class="run-result error">
+                        <h3>✗ Workflow Execution Failed</h3>
+                        <p><strong>Error:</strong> ${error.message}</p>
+                    </div>
+                `;
+            }
+        }
+
+        async function viewRunTrace(runId) {
+            try {
+                const trace = await getRunTrace(runId);
+                const executionResults = document.getElementById('executionResults');
+                
+                executionResults.innerHTML = `
+                    <div class="run-trace">
+                        <h3>Run Trace: ${runId}</h3>
+                        <pre>${JSON.stringify(trace, null, 2)}</pre>
+                    </div>
+                `;
+            } catch (error) {
+                alert('Failed to load trace: ' + error.message);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Form submission handler
+            const form = document.getElementById('workflowForm');
+            if (form) {
+                form.addEventListener('submit', async function(e) {
+                    e.preventDefault();
+                    const yamlText = document.getElementById('workflowYaml').value;
+                    
+                    try {
+                        // Simple YAML to JSON conversion (basic)
+                        const workflow = parseYAML(yamlText);
+                        const resultsSection = document.getElementById('resultsSection');
+                        const executionResults = document.getElementById('executionResults');
+                        
+                        executionResults.innerHTML = '<p class="loading">Executing workflow...</p>';
+                        resultsSection.style.display = 'block';
+                        
+                        const result = await executeWorkflow(workflow);
+                        
+                        executionResults.innerHTML = `
+                            <div class="run-result success">
+                                <h3>✓ Workflow Executed</h3>
+                                <p><strong>Run ID:</strong> ${result.id}</p>
+                                <p><strong>Status:</strong> ${result.status}</p>
+                                <button class="button button-secondary" onclick="viewRunTrace('${result.id}')">
+                                    View Trace
+                                </button>
+                            </div>
+                        `;
+                    } catch (error) {
+                        document.getElementById('resultsSection').style.display = 'block';
+                        executionResults.innerHTML = `
+                            <div class="run-result error">
+                                <h3>✗ Error</h3>
+                                <p>${error.message}</p>
+                            </div>
+                        `;
+                    }
+                });
+            }
+        });
+
+        // Simple YAML-to-JSON parser (basic implementation)
+        function parseYAML(yaml) {
+            // This is a very basic parser. For production, use a proper library.
+            try {
+                return JSON.parse(yaml);
+            } catch (e) {
+                // Try to convert YAML-like format
+                const lines = yaml.split('\n');
+                const obj = {};
+                let current = obj;
+                const stack = [{ obj, indent: -1 }];
+
+                for (const line of lines) {
+                    if (!line.trim() || line.trim().startsWith('#')) continue;
+                    
+                    const indent = line.search(/\S/);
+                    const content = line.trim();
+
+                    while (stack.length > 1 && stack[stack.length - 1].indent >= indent) {
+                        stack.pop();
+                    }
+
+                    const [key, value] = content.split(':').map(s => s.trim());
+                    
+                    if (value === undefined || value === '') {
+                        const newObj = {};
+                        stack[stack.length - 1].obj[key] = newObj;
+                        stack.push({ obj: newObj, indent });
+                    } else {
+                        stack[stack.length - 1].obj[key] = value;
+                    }
+                }
+
+                return obj;
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,42 @@
+workflow: draft-to-publish-with-qa-gate
+trigger:
+  server: notion-mcp
+  tool: get_pages
+  params:
+    database_id: $NOTION_EDITORIAL_DB
+steps:
+  - server: wordpress-mcp
+    tool: create_draft
+    input_map:
+      title: "{trigger.pages[0].title}"
+      content: "{trigger.pages[0].body}"
+  - server: qa-gate
+    tool: run_check
+    input_map:
+      title: "{trigger.pages[0].title}"
+      content: "{trigger.pages[0].body}"
+      meta_description: "{trigger.pages[0].meta_description}"
+      draft_url: "{steps[0].url}"
+      post_id: "{steps[0].post_id}"
+      target_audience: "technical content operators and product engineers"
+      brand_rubric: "Clear, practical, non-hype, specific examples, no vague AI claims."
+      internal_links:
+        - "/static/workflows.html"
+      mode: "manual_approval"
+  - server: wordpress-mcp
+    tool: publish_post
+    input_map:
+      post_id: "{steps[0].post_id}"
+      url: "{steps[0].url}"
+      qa_passed: "{steps[1].passed}"
+  - server: slack-mcp
+    tool: post_message
+    input_map:
+      channel: "#content-team"
+      text: "QA approved and post published: {steps[2].url}"
+  - server: resend-mcp
+    tool: send_email
+    input_map:
+      to: "team@example.com"
+      subject: "Published after QA: {trigger.pages[0].title}"
+      body: "QA gate passed. Published URL: {steps[2].url}"

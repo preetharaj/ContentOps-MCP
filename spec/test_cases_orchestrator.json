@@ -1,0 +1,139 @@
+{
+  "test_cases": [
+    {
+      "name": "Orchestrator - Happy path workflow",
+      "description": "Execute complete workflow: Notion -> WordPress -> Slack -> Resend",
+      "endpoint": "POST /mcp/workflows/execute",
+      "request": {
+        "workflow": "notion-to-content-stack",
+        "trigger": {
+          "server": "notion-mcp",
+          "tool": "get_pages",
+          "params": {
+            "database_id": "notion-db-123"
+          }
+        },
+        "steps": [
+          {
+            "server": "wordpress-mcp",
+            "tool": "create_draft",
+            "input_map": {
+              "title": "trigger.pages[0].title",
+              "content": "trigger.pages[0].body"
+            }
+          },
+          {
+            "server": "slack-mcp",
+            "tool": "post_message",
+            "input_map": {
+              "channel": "#content-team",
+              "text": "New draft published: {steps[0].url}"
+            }
+          },
+          {
+            "server": "resend-mcp",
+            "tool": "send_email",
+            "input_map": {
+              "subject": "Content Summary: {steps[0].slug}",
+              "body": "Draft published at {steps[0].url}"
+            }
+          }
+        ]
+      },
+      "expected_response": {
+        "id": "string (uuid)",
+        "workflow": "notion-to-content-stack",
+        "status": "completed",
+        "steps": [
+          {
+            "step_index": 0,
+            "server": "wordpress-mcp",
+            "tool": "create_draft",
+            "status": "completed",
+            "tool_result": {
+              "tool": "create_draft",
+              "output": {
+                "slug": "string",
+                "url": "string"
+              }
+            }
+          },
+          {
+            "step_index": 1,
+            "server": "slack-mcp",
+            "tool": "post_message",
+            "status": "completed",
+            "tool_result": {
+              "tool": "post_message",
+              "output": {
+                "ok": true
+              }
+            }
+          },
+          {
+            "step_index": 2,
+            "server": "resend-mcp",
+            "tool": "send_email",
+            "status": "completed",
+            "tool_result": {
+              "tool": "send_email",
+              "output": {
+                "id": "email-123456",
+                "status": "sent"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Orchestrator - Missing resend-mcp step",
+      "description": "Workflow validation failure: must include resend-mcp",
+      "endpoint": "POST /mcp/workflows/execute",
+      "request": {
+        "workflow": "notion-to-blog-no-email",
+        "trigger": {
+          "server": "notion-mcp",
+          "tool": "get_pages",
+          "params": {
+            "database_id": "notion-db-123"
+          }
+        },
+        "steps": [
+          {
+            "server": "wordpress-mcp",
+            "tool": "create_draft",
+            "input_map": {
+              "title": "trigger.pages[0].title",
+              "content": "trigger.pages[0].body"
+            }
+          },
+          {
+            "server": "slack-mcp",
+            "tool": "post_message",
+            "input_map": {
+              "channel": "#content-team",
+              "text": "New draft published"
+            }
+          }
+        ]
+      },
+      "expected_status": 400,
+      "expected_error": "Workflow must include at least one resend-mcp step"
+    },
+    {
+      "name": "Orchestrator - Get run status",
+      "description": "Retrieve run status and trace after execution",
+      "endpoint": "GET /mcp/resources/runs/{run_id}",
+      "request": {
+        "run_id": "uuid-from-previous-execution"
+      },
+      "expected_response": {
+        "id": "uuid",
+        "workflow": "notion-to-content-stack",
+        "status": "completed",
+        "steps": "array of RunStep objects"
+      }
+    }
+  ]
+}

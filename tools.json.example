@@ -1,0 +1,69 @@
+[
+  {
+    "server": "notion-mcp",
+    "name": "get_pages",
+    "description": "Get pages from a Notion database.",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "database_id": { "type": "string" }
+      },
+      "required": ["database_id"]
+    },
+    "output_schema": {
+      "type": "object",
+      "properties": {
+        "pages": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": { "type": "string" },
+              "title": { "type": "string" },
+              "body": { "type": "string" }
+            }
+          }
+        }
+      }
+    }
+  },
+  {
+    "server": "wordpress-mcp",
+    "name": "create_draft",
+    "description": "Create a draft post on WordPress.",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "content": { "type": "string" }
+      },
+      "required": ["title"]
+    },
+    "output_schema": {
+      "type": "object",
+      "properties": {
+        "slug": { "type": "string" },
+        "url": { "type": "string" }
+      }
+    }
+  },
+  {
+    "server": "slack-mcp",
+    "name": "post_message",
+    "description": "Post a message to a Slack channel.",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "channel": { "type": "string" },
+        "text": { "type": "string" }
+      },
+      "required": ["channel", "text"]
+    },
+    "output_schema": {
+      "type": "object",
+      "properties": {
+        "ok": { "type": "boolean" }
+      }
+    }
+  }
+]

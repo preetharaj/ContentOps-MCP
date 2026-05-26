@@ -1,0 +1,54 @@
+{
+  "test_cases": [
+    {
+      "name": "notion-mcp:get_pages - Valid call",
+      "description": "Retrieve pages from a Notion database",
+      "server": "notion-mcp",
+      "endpoint": "POST /use_tool",
+      "request": {
+        "name": "get_pages",
+        "input": {
+          "database_id": "notion-db-123"
+        }
+      },
+      "expected_output": {
+        "tool": "get_pages",
+        "output": {
+          "pages": [
+            {
+              "id": "page-1",
+              "title": "Editorial Calendar Page",
+              "body": "Content for the editorial calendar page."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "notion-mcp:get_pages - Missing database_id",
+      "description": "Error case: missing required parameter",
+      "server": "notion-mcp",
+      "endpoint": "POST /use_tool",
+      "request": {
+        "name": "get_pages",
+        "input": {}
+      },
+      "expected_status": 400,
+      "expected_error": "Missing database_id"
+    },
+    {
+      "name": "notion-mcp:get_pages - Tool not found",
+      "description": "Error case: invalid tool name",
+      "server": "notion-mcp",
+      "endpoint": "POST /use_tool",
+      "request": {
+        "name": "invalid_tool",
+        "input": {
+          "database_id": "notion-db-123"
+        }
+      },
+      "expected_status": 400,
+      "expected_error": "Tool invalid_tool not found"
+    }
+  ]
+}

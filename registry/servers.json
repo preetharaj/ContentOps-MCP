@@ -1,0 +1,288 @@
+{
+  "schema_version": "1.0.0",
+  "registry_url": "https://registry.contentops.dev",
+  "last_updated": "2026-05-25T00:00:00Z",
+  "servers": [
+    {
+      "id": "ghost",
+      "name": "Ghost MCP Server",
+      "category": "cms",
+      "version": "1.0.0",
+      "url": "https://ghost.org/docs/admin-api/",
+      "install_extra": "ghost",
+      "package_hint": "pip install contentops-mcp[ghost]",
+      "tools": [
+        "get_posts",
+        "get_page",
+        "create_draft",
+        "update_post",
+        "publish_post",
+        "get_tags"
+      ],
+      "compatibility_notes": "Requires Ghost Admin API key and site URL. Best for headless blog/newsletter publishing.",
+      "status": "stable",
+      "maintenance_tier": "core",
+      "min_orchestrator_version": "0.3.0"
+    },
+    {
+      "id": "beehiiv",
+      "name": "Beehiiv MCP Server",
+      "category": "newsletter",
+      "version": "1.0.0",
+      "url": "https://developers.beehiiv.com/",
+      "install_extra": "beehiiv",
+      "package_hint": "pip install contentops-mcp[beehiiv]",
+      "tools": [
+        "get_publications",
+        "create_draft",
+        "publish_newsletter",
+        "get_subscribers",
+        "add_subscriber",
+        "get_analytics"
+      ],
+      "compatibility_notes": "Requires Beehiiv API key. Publication ID should be configured per workspace.",
+      "status": "stable",
+      "maintenance_tier": "core",
+      "min_orchestrator_version": "0.3.0"
+    },
+    {
+      "id": "substack",
+      "name": "Substack Scrape MCP Server",
+      "category": "newsletter",
+      "version": "0.8.0",
+      "url": "https://substack.com/",
+      "install_extra": "substack",
+      "package_hint": "pip install contentops-mcp[substack]",
+      "tools": [
+        "scrape_posts",
+        "get_post",
+        "extract_links",
+        "export_draft"
+      ],
+      "compatibility_notes": "Prototype adapter using scrape/export flows where official write APIs are limited. Treat writes as experimental.",
+      "status": "experimental",
+      "maintenance_tier": "community",
+      "min_orchestrator_version": "0.3.0"
+    },
+    {
+      "id": "wordpress",
+      "name": "WordPress MCP Server",
+      "category": "cms",
+      "version": "1.0.0",
+      "url": "https://developer.wordpress.org/rest-api/",
+      "install_extra": "wordpress",
+      "package_hint": "pip install contentops-mcp[wordpress]",
+      "tools": [
+        "get_posts",
+        "get_page",
+        "get_links",
+        "create_draft",
+        "update_post",
+        "publish_post",
+        "get_categories",
+        "get_media"
+      ],
+      "compatibility_notes": "Requires WordPress REST API access. Application password recommended for local prototypes.",
+      "status": "stable",
+      "maintenance_tier": "core",
+      "min_orchestrator_version": "0.3.0"
+    },
+    {
+      "id": "webflow",
+      "name": "Webflow MCP Server",
+      "category": "cms",
+      "version": "0.9.0",
+      "url": "https://developers.webflow.com/",
+      "install_extra": "webflow",
+      "package_hint": "pip install contentops-mcp[webflow]",
+      "tools": [
+        "get_sites",
+        "get_collections",
+        "get_collection_items",
+        "create_collection_item",
+        "update_collection_item",
+        "publish_site"
+      ],
+      "compatibility_notes": "Requires Webflow token and site ID. Publishing may require workspace permissions.",
+      "status": "stable",
+      "maintenance_tier": "core",
+      "min_orchestrator_version": "0.3.0"
+    },
+    {
+      "id": "resend",
+      "name": "Resend MCP Server",
+      "category": "email",
+      "version": "1.0.0",
+      "url": "https://resend.com/docs",
+      "install_extra": "resend",
+      "package_hint": "pip install contentops-mcp[resend]",
+      "tools": [
+        "send_email",
+        "get_email",
+        "get_domain",
+        "get_campaign_stats"
+      ],
+      "compatibility_notes": "Requires Resend API key and verified sender domain.",
+      "status": "stable",
+      "maintenance_tier": "core",
+      "min_orchestrator_version": "0.3.0"
+    },
+    {
+      "id": "loops",
+      "name": "Loops MCP Server",
+      "category": "email",
+      "version": "0.9.0",
+      "url": "https://loops.so/docs",
+      "install_extra": "loops",
+      "package_hint": "pip install contentops-mcp[loops]",
+      "tools": [
+        "send_transactional_email",
+        "create_contact",
+        "update_contact",
+        "add_contact_to_list",
+        "get_campaigns"
+      ],
+      "compatibility_notes": "Requires Loops API key. Transactional templates must already exist in Loops.",
+      "status": "stable",
+      "maintenance_tier": "core",
+      "min_orchestrator_version": "0.3.0"
+    },
+    {
+      "id": "mailchimp",
+      "name": "Mailchimp MCP Server",
+      "category": "email",
+      "version": "1.0.0",
+      "url": "https://mailchimp.com/developer/",
+      "install_extra": "mailchimp",
+      "package_hint": "pip install contentops-mcp[mailchimp]",
+      "tools": [
+        "create_campaign",
+        "update_campaign",
+        "send_campaign",
+        "get_lists",
+        "upsert_member",
+        "get_report"
+      ],
+      "compatibility_notes": "Requires Mailchimp API key and datacenter-aware base URL.",
+      "status": "stable",
+      "maintenance_tier": "core",
+      "min_orchestrator_version": "0.3.0"
+    },
+    {
+      "id": "linear",
+      "name": "Linear MCP Server",
+      "category": "ops",
+      "version": "0.9.0",
+      "url": "https://developers.linear.app/docs/graphql/working-with-the-graphql-api",
+      "install_extra": "linear",
+      "package_hint": "pip install contentops-mcp[linear]",
+      "tools": [
+        "create_issue",
+        "update_issue",
+        "get_issue",
+        "list_team_issues",
+        "add_comment"
+      ],
+      "compatibility_notes": "Requires Linear API key. Useful for editorial bug/approval workflows.",
+      "status": "stable",
+      "maintenance_tier": "core",
+      "min_orchestrator_version": "0.3.0"
+    },
+    {
+      "id": "notion",
+      "name": "Notion MCP Server",
+      "category": "ops",
+      "version": "1.0.0",
+      "url": "https://developers.notion.com/",
+      "install_extra": "notion",
+      "package_hint": "pip install contentops-mcp[notion]",
+      "tools": [
+        "get_pages",
+        "get_page",
+        "create_page",
+        "update_page_status",
+        "query_database"
+      ],
+      "compatibility_notes": "Requires Notion integration token and database access grant.",
+      "status": "stable",
+      "maintenance_tier": "core",
+      "min_orchestrator_version": "0.3.0"
+    },
+    {
+      "id": "coda",
+      "name": "Coda MCP Server",
+      "category": "ops",
+      "version": "0.8.0",
+      "url": "https://coda.io/developers/apis/v1",
+      "install_extra": "coda",
+      "package_hint": "pip install contentops-mcp[coda]",
+      "tools": [
+        "list_docs",
+        "get_table",
+        "list_rows",
+        "upsert_row",
+        "update_row",
+        "create_doc"
+      ],
+      "compatibility_notes": "Requires Coda API token. Best for editorial calendars managed in Coda tables.",
+      "status": "stable",
+      "maintenance_tier": "community",
+      "min_orchestrator_version": "0.3.0"
+    },
+    {
+      "id": "qa-gate",
+      "name": "AI Draft-to-Publish QA Gate",
+      "category": "quality",
+      "version": "1.0.0",
+      "url": "https://registry.contentops.dev/qa-gate",
+      "install_extra": "qa",
+      "package_hint": "pip install contentops-mcp[qa]",
+      "tools": [
+        "run_check",
+        "override_and_publish",
+        "retry_after_edit",
+        "send_to_editor_channel"
+      ],
+      "compatibility_notes": "Local zero-cost checks run by default. Optional model API can replace the heuristic brand/readability evaluator.",
+      "status": "stable",
+      "maintenance_tier": "core",
+      "min_orchestrator_version": "0.3.0"
+    },
+    {
+      "id": "salesforce-crm-sync",
+      "name": "Salesforce CRM Sync MCP Server",
+      "category": "premium",
+      "version": "0.1.0",
+      "url": "https://registry.contentops.dev/premium/salesforce-crm-sync",
+      "install_extra": "salesforce",
+      "package_hint": "pip install contentops-mcp[salesforce]",
+      "tools": [
+        "sync_lead",
+        "attach_campaign",
+        "update_member_status"
+      ],
+      "compatibility_notes": "Premium optional add-on. Not required for OSS content workflows.",
+      "status": "preview",
+      "maintenance_tier": "premium",
+      "min_orchestrator_version": "0.3.0"
+    },
+    {
+      "id": "hubspot-contact-tagging",
+      "name": "HubSpot Contact Tagging MCP Server",
+      "category": "premium",
+      "version": "0.1.0",
+      "url": "https://registry.contentops.dev/premium/hubspot-contact-tagging",
+      "install_extra": "hubspot",
+      "package_hint": "pip install contentops-mcp[hubspot]",
+      "tools": [
+        "tag_contact",
+        "update_lifecycle_stage",
+        "sync_content_engagement"
+      ],
+      "compatibility_notes": "Premium optional add-on for marketing ops enrichment.",
+      "status": "preview",
+      "maintenance_tier": "premium",
+      "min_orchestrator_version": "0.3.0"
+    }
+  ]
+}

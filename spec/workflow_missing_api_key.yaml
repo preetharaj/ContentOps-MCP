@@ -1,0 +1,23 @@
+workflow: notion-to-content-stack-with-email-failure
+trigger:
+  server: notion-mcp
+  tool: get_pages
+  params:
+    database_id: $NOTION_EDITORIAL_DB
+steps:
+  - server: wordpress-mcp
+    tool: create_draft
+    input_map:
+      title: trigger.pages[0].title
+      content: trigger.pages[0].body
+  - server: slack-mcp
+    tool: post_message
+    input_map:
+      channel: "#content-team"
+      text: "New draft published: {steps[0].url}"
+  - server: resend-mcp
+    tool: send_email
+    input_map:
+      subject: "Content Summary: {steps[0].slug}"
+      body: "Draft published at {steps[0].url}"
+      to: "team@example.com"

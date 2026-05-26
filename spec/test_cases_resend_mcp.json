@@ -1,0 +1,55 @@
+{
+  "test_cases": [
+    {
+      "name": "resend-mcp:send_email - Valid call",
+      "description": "Send an email via Resend",
+      "server": "resend-mcp",
+      "endpoint": "POST /use_tool",
+      "request": {
+        "name": "send_email",
+        "input": {
+          "subject": "Content Summary: editorial-calendar-page",
+          "body": "Draft published at https://example.com/draft/editorial-calendar-page",
+          "to": "team@example.com",
+          "from": "content@example.com"
+        }
+      },
+      "expected_output": {
+        "tool": "send_email",
+        "output": {
+          "id": "email-123456",
+          "status": "sent"
+        }
+      }
+    },
+    {
+      "name": "resend-mcp:send_email - Missing subject",
+      "description": "Error case: missing required parameter",
+      "server": "resend-mcp",
+      "endpoint": "POST /use_tool",
+      "request": {
+        "name": "send_email",
+        "input": {
+          "body": "Email body only"
+        }
+      },
+      "expected_status": 400,
+      "expected_error": "Missing subject or body"
+    },
+    {
+      "name": "resend-mcp:send_email - Tool not found",
+      "description": "Error case: invalid tool name",
+      "server": "resend-mcp",
+      "endpoint": "POST /use_tool",
+      "request": {
+        "name": "send_sms",
+        "input": {
+          "subject": "Test",
+          "body": "Test message"
+        }
+      },
+      "expected_status": 400,
+      "expected_error": "Tool send_sms not found"
+    }
+  ]
+}

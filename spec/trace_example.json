@@ -1,0 +1,171 @@
+{
+  "name": "Live run trace example",
+  "description": "Example of GET /mcp/resources/runs/{run_id}/trace output showing steps in progress",
+  "endpoint": "GET /mcp/resources/runs/run-12345-abc/trace",
+  "response_at_start": {
+    "run_id": "run-12345-abc",
+    "workflow": "notion-to-content-stack",
+    "status": "in_progress",
+    "steps": [
+      {
+        "step_index": 0,
+        "server": "wordpress-mcp",
+        "tool": "create_draft",
+        "status": "in_progress",
+        "tool_call": {
+          "name": "create_draft",
+          "input": {
+            "title": "Editorial Calendar Page",
+            "content": "Content for the editorial calendar page."
+          }
+        },
+        "tool_result": null,
+        "error": null
+      },
+      {
+        "step_index": 1,
+        "server": "slack-mcp",
+        "tool": "post_message",
+        "status": "pending",
+        "tool_call": null,
+        "tool_result": null,
+        "error": null
+      },
+      {
+        "step_index": 2,
+        "server": "resend-mcp",
+        "tool": "send_email",
+        "status": "pending",
+        "tool_call": null,
+        "tool_result": null,
+        "error": null
+      }
+    ]
+  },
+  "response_after_step_0_completes": {
+    "run_id": "run-12345-abc",
+    "workflow": "notion-to-content-stack",
+    "status": "in_progress",
+    "steps": [
+      {
+        "step_index": 0,
+        "server": "wordpress-mcp",
+        "tool": "create_draft",
+        "status": "completed",
+        "tool_call": {
+          "name": "create_draft",
+          "input": {
+            "title": "Editorial Calendar Page",
+            "content": "Content for the editorial calendar page."
+          }
+        },
+        "tool_result": {
+          "tool": "create_draft",
+          "output": {
+            "slug": "editorial-calendar-page",
+            "url": "https://example.com/draft/editorial-calendar-page"
+          },
+          "error": null
+        },
+        "error": null
+      },
+      {
+        "step_index": 1,
+        "server": "slack-mcp",
+        "tool": "post_message",
+        "status": "in_progress",
+        "tool_call": {
+          "name": "post_message",
+          "input": {
+            "channel": "#content-team",
+            "text": "New draft published: https://example.com/draft/editorial-calendar-page"
+          }
+        },
+        "tool_result": null,
+        "error": null
+      },
+      {
+        "step_index": 2,
+        "server": "resend-mcp",
+        "tool": "send_email",
+        "status": "pending",
+        "tool_call": null,
+        "tool_result": null,
+        "error": null
+      }
+    ]
+  },
+  "response_at_completion": {
+    "run_id": "run-12345-abc",
+    "workflow": "notion-to-content-stack",
+    "status": "completed",
+    "steps": [
+      {
+        "step_index": 0,
+        "server": "wordpress-mcp",
+        "tool": "create_draft",
+        "status": "completed",
+        "tool_call": {
+          "name": "create_draft",
+          "input": {
+            "title": "Editorial Calendar Page",
+            "content": "Content for the editorial calendar page."
+          }
+        },
+        "tool_result": {
+          "tool": "create_draft",
+          "output": {
+            "slug": "editorial-calendar-page",
+            "url": "https://example.com/draft/editorial-calendar-page"
+          },
+          "error": null
+        },
+        "error": null
+      },
+      {
+        "step_index": 1,
+        "server": "slack-mcp",
+        "tool": "post_message",
+        "status": "completed",
+        "tool_call": {
+          "name": "post_message",
+          "input": {
+            "channel": "#content-team",
+            "text": "New draft published: https://example.com/draft/editorial-calendar-page"
+          }
+        },
+        "tool_result": {
+          "tool": "post_message",
+          "output": {
+            "ok": true,
+            "ts": "1234567890.123456"
+          },
+          "error": null
+        },
+        "error": null
+      },
+      {
+        "step_index": 2,
+        "server": "resend-mcp",
+        "tool": "send_email",
+        "status": "completed",
+        "tool_call": {
+          "name": "send_email",
+          "input": {
+            "subject": "Content Summary: editorial-calendar-page",
+            "body": "Draft published at https://example.com/draft/editorial-calendar-page"
+          }
+        },
+        "tool_result": {
+          "tool": "send_email",
+          "output": {
+            "id": "email-123456",
+            "status": "sent"
+          },
+          "error": null
+        },
+        "error": null
+      }
+    ]
+  }
+}

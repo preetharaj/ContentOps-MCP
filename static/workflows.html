@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Workflows - ContentOps Orchestrator</title>
+  <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+  <div class="sidebar">
+    <div class="sidebar-header">
+      <h1>ContentOps</h1>
+      <p class="sidebar-subtitle">Orchestrator</p>
+    </div>
+    <nav class="sidebar-nav">
+      <a href="/" class="nav-link"><span class="nav-icon">🏠</span><span>Home</span></a>
+      <a href="/registry" class="nav-link"><span class="nav-icon">🧩</span><span>Registry</span></a>
+      <a href="/static/workflows.html" class="nav-link active"><span class="nav-icon">⚙️</span><span>Workflows</span></a>
+      <a href="/static/runs.html" class="nav-link"><span class="nav-icon">📊</span><span>Runs</span></a>
+    </nav>
+  </div>
+
+  <main class="main-content">
+    <div class="container">
+      <div class="page-header">
+        <h1>MCP Workflows</h1>
+        <p class="page-subtitle">Run MCP-native content workflows, including the Phase 3 QA gate before publish.</p>
+      </div>
+
+      <section class="card">
+        <h2>Available Workflows</h2>
+        <div class="workflows-list">
+          <div class="workflow-item">
+            <div class="workflow-header">
+              <h3>Draft to Publish with QA Gate</h3>
+              <span class="workflow-tag">phase-3</span>
+            </div>
+            <p class="workflow-description">
+              Trigger: Notion page<br>
+              Steps: WordPress draft → QA gate → publish → Slack → Resend
+            </p>
+            <div class="workflow-actions">
+              <button class="button button-primary" onclick="runWorkflow('draft-to-publish-with-qa-gate')">Run QA Workflow</button>
+            </div>
+          </div>
+
+          <div class="workflow-item">
+            <div class="workflow-header">
+              <h3>QA Failure Demo</h3>
+              <span class="workflow-tag">pause-demo</span>
+            </div>
+            <p class="workflow-description">
+              Runs the same QA gate with missing meta data and short content so the workflow pauses.
+            </p>
+            <div class="workflow-actions">
+              <button class="button button-secondary" onclick="runWorkflow('qa-failure-demo')">Run Failure Demo</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="card form-section">
+        <h2>Execute Custom Workflow JSON</h2>
+        <form id="workflowForm" class="workflow-form">
+          <div class="form-group">
+            <label for="workflowJson">Workflow JSON</label>
+            <textarea id="workflowJson" rows="22" required></textarea>
+          </div>
+          <div class="form-actions">
+            <button type="submit" class="button button-primary">Execute Workflow</button>
+            <button type="button" class="button button-ghost" onclick="loadTemplate()">Load QA Template</button>
+          </div>
+        </form>
+      </section>
+
+      <section class="card" id="resultsSection" style="display:none;">
+        <h2>Execution Results</h2>
+        <div id="executionResults" class="execution-results"></div>
+      </section>
+    </div>
+  </main>
+
+  <script src="/static/js/main.js"></script>
+  <script>
+    const WORKFLOWS = {
+      'draft-to-publish-with-qa-gate': {
+        workflow: 'draft-to-publish-with-qa-gate',
+        trigger: {
+          server: 'notion-mcp',
+          tool: 'get_pages',
+          params: { database_id: '$NOTION_EDITORIAL_DB' }
+        },
+        steps: [
+          {
+            server: 'wordpress-mcp',
+            tool: 'create_draft',
+            input_map: {
+              title: '{trigger.pages[0].title}',
+              content: '{trigger.pages[0].body}'
+            }
+          },
+          {
+            server: 'qa-gate',
+            tool: 'run_check',
+            input_map: {
+              title: '{trigger.pages[0].title}',
+              content: '{trigger.pages[0].body}',
+              meta_description: '{trigger.pages[0].meta_description}',
+              draft_url: '{steps[0].url}',
+              post_id: '{steps[0].post_id}',
+              target_audience: 'technical content operators and product engineers',
+              brand_rubric: 'Clear, practical, non-hype, specific examples, no vague AI claims.',
+              internal_links: ['/static/workflows.html'],
+              mode: 'manual_approval'
+            }
+          },
+          {
+            server: 'wordpress-mcp',
+            tool: 'publish_post',
+            input_map: {
+              post_id: '{steps[0].post_id}',
+              url: '{steps[0].url}',
+              qa_passed: '{steps[1].passed}'
+            }
+          },
+          {
+            server: 'slack-mcp',
+            tool: 'post_message',
+            input_map: {
+              channel: '#content-team',
+              text: 'QA approved and post published: {steps[2].url}'
+            }
+          },
+          {
+            server: 'resend-mcp',
+            tool: 'send_email',
+            input_map: {
+              to: 'team@example.com',
+              subject: 'Published after QA: {trigger.pages[0].title}',
+              body: 'QA gate passed. Published URL: {steps[2].url}'
+            }
+          }
+        ]
+      },
+      'qa-failure-demo': {
+        workflow: 'qa-failure-demo',
+        trigger: {
+          server: 'notion-mcp',
+          tool: 'get_pages',
+          params: {
+            database_id: '$NOTION_EDITORIAL_DB',
+            title: 'AI',
+            content: 'Short draft. Revolutionary magic. No examples.'
+          }
+        },
+        steps: [
+          { server: 'wordpress-mcp', tool: 'create_draft', input_map: { title: '{trigger.pages[0].title}', content: '{trigger.pages[0].body}' } },
+          {
+            server: 'qa-gate',
+            tool: 'run_check',
+            input_map: {
+              title: '{trigger.pages[0].title}',
+              content: '{trigger.pages[0].body}',
+              meta_description: '',
+              target_audience: 'technical content operators',
+              brand_rubric: 'Clear, practical, non-hype, specific examples.',
+              mode: 'manual_approval'
+            }
+          },
+          { server: 'wordpress-mcp', tool: 'publish_post', input_map: { post_id: '{steps[0].post_id}', qa_passed: '{steps[1].passed}' } }
+        ]
+      }
+    };
+
+    function loadTemplate() {
+      document.getElementById('workflowJson').value = JSON.stringify(WORKFLOWS['draft-to-publish-with-qa-gate'], null, 2);
+    }
+
+    async function runWorkflow(workflowId) {
+      const workflow = WORKFLOWS[workflowId];
+      document.getElementById('workflowJson').value = JSON.stringify(workflow, null, 2);
+      await executeAndRender(workflow);
+    }
+
+    async function executeAndRender(workflow) {
+      const resultsSection = document.getElementById('resultsSection');
+      const executionResults = document.getElementById('executionResults');
+      resultsSection.style.display = 'block';
+      executionResults.innerHTML = '<p class="loading">Executing workflow...</p>';
+      try {
+        const run = await executeWorkflow(workflow);
+        const qaStep = (run.steps || []).find(step => step.server === 'qa-gate' || step.server === 'qa_gate');
+        const qaOutput = qaStep && qaStep.tool_result ? qaStep.tool_result.output : null;
+        executionResults.innerHTML = `
+          <div class="run-item">
+            <div class="run-header">
+              <div><h3>Run ${run.id.substring(0, 8)}...</h3><p class="run-workflow">Workflow: ${run.workflow}</p></div>
+              <span class="status-badge ${getStatusClass(run.status)}">${run.status}</span>
+            </div>
+            ${qaOutput ? `<div class="qa-result"><h4>QA Gate Reasoning</h4><p><strong>Pass:</strong> ${qaOutput.pass}</p><p><strong>Score:</strong> ${qaOutput.score}/100</p><p>${qaOutput.reasoning}</p><pre>${JSON.stringify(qaOutput.suggestions, null, 2)}</pre></div>` : ''}
+            <pre>${JSON.stringify(run, null, 2)}</pre>
+            <a class="button button-secondary" href="/static/runs.html">Open Runs</a>
+          </div>`;
+      } catch (error) {
+        executionResults.innerHTML = `<p class="error">Execution failed: ${error.message}</p>`;
+      }
+    }
+
+    document.getElementById('workflowForm').addEventListener('submit', async function(event) {
+      event.preventDefault();
+      const workflow = JSON.parse(document.getElementById('workflowJson').value);
+      await executeAndRender(workflow);
+    });
+
+    loadTemplate();
+  </script>
+</body>
+</html>

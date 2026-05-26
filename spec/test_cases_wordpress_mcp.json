@@ -1,0 +1,52 @@
+{
+  "test_cases": [
+    {
+      "name": "wordpress-mcp:create_draft - Valid call",
+      "description": "Create a draft post on WordPress",
+      "server": "wordpress-mcp",
+      "endpoint": "POST /use_tool",
+      "request": {
+        "name": "create_draft",
+        "input": {
+          "title": "Editorial Calendar Page",
+          "content": "Content for the editorial calendar page."
+        }
+      },
+      "expected_output": {
+        "tool": "create_draft",
+        "output": {
+          "slug": "editorial-calendar-page",
+          "url": "https://example.com/draft/editorial-calendar-page"
+        }
+      }
+    },
+    {
+      "name": "wordpress-mcp:create_draft - Missing title",
+      "description": "Error case: missing required parameter",
+      "server": "wordpress-mcp",
+      "endpoint": "POST /use_tool",
+      "request": {
+        "name": "create_draft",
+        "input": {
+          "content": "Content only, no title"
+        }
+      },
+      "expected_status": 400,
+      "expected_error": "Missing title"
+    },
+    {
+      "name": "wordpress-mcp:create_draft - Tool not found",
+      "description": "Error case: invalid tool name",
+      "server": "wordpress-mcp",
+      "endpoint": "POST /use_tool",
+      "request": {
+        "name": "publish_post",
+        "input": {
+          "title": "Test"
+        }
+      },
+      "expected_status": 400,
+      "expected_error": "Tool publish_post not found"
+    }
+  ]
+}

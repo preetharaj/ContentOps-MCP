@@ -1,0 +1,2 @@
+docs/MCP-registry.gif filter=lfs diff=lfs merge=lfs -text
+docs/workflow.gif filter=lfs diff=lfs merge=lfs -text

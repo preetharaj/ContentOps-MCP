@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Content-ops Orchestrator</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <h1>Content-ops</h1>
+            <p class="sidebar-subtitle">Orchestrator</p>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="/static/workflows.html" class="nav-link active">
+                <span class="nav-icon">⚙️</span>
+                <span>Workflows</span>
+            </a>
+            <a href="/static/runs.html" class="nav-link">
+                <span class="nav-icon">📊</span>
+                <span>Runs</span>
+            </a>
+            <a href="/registry" class="nav-link">
+                <span class="nav-icon">🧩</span>
+                <span>Registry</span>
+            </a>
+        </nav>
+    </div>
+
+    <main class="main-content">
+        <div class="container">
+            <!-- Hero Section -->
+            <section class="hero">
+                <div class="hero-content">
+                    <h1 class="hero-title">Welcome to Content-ops</h1>
+                    <p class="hero-subtitle">
+                        Automate your content workflow: Notion → Blog → Slack → Email
+                    </p>
+                    <p class="hero-description">
+                        Create workflows that automatically convert your Notion pages into published blog posts,
+                        notify your team on Slack, and send summary emails—all in one seamless orchestration.
+                    </p>
+                </div>
+            </section>
+
+            <!-- Quick Links Section -->
+            <section class="quick-links">
+                <div class="card">
+                    <div class="card-header">
+                        <h2>⚙️ Create Workflow</h2>
+                        <p class="card-subtitle">Set up a new content orchestration</p>
+                    </div>
+                    <p class="card-body">
+                        Define triggers, steps, and actions to automate your content pipeline.
+                    </p>
+                    <a href="/static/workflows.html" class="button button-primary">
+                        Go to Workflows
+                    </a>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h2>🧩 MCP Registry</h2>
+                        <p class="card-subtitle">Browse curated content-stack MCP servers</p>
+                    </div>
+                    <p class="card-body">
+                        Filter Ghost, WordPress, Beehiiv, Resend, Notion, Linear, Coda, and QA gate servers.
+                    </p>
+                    <a href="/registry" class="button button-secondary">
+                        Open Registry
+                    </a>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h2>📊 View Runs</h2>
+                        <p class="card-subtitle">Monitor workflow executions</p>
+                    </div>
+                    <p class="card-body">
+                        Track the status, performance, and history of all workflow runs.
+                    </p>
+                    <a href="/static/runs.html" class="button button-secondary">
+                        View Recent Runs
+                    </a>
+                </div>
+            </section>
+
+            <!-- Features Section -->
+            <section class="features">
+                <h2>Features</h2>
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <h3>🔔 Notion Integration</h3>
+                        <p>Automatically trigger workflows when new pages are created in your Notion database.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h3>✏️ Blog Drafts</h3>
+                        <p>Create and publish blog drafts with title, outline, and author information.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h3>💬 Slack Notifications</h3>
+                        <p>Notify your team on Slack with draft links and workflow status updates.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h3>📧 Email Summaries</h3>
+                        <p>Send email summaries to stakeholders with draft links and publication status.</p>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+</body>
+</html>

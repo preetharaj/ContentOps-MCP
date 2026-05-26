@@ -1,0 +1,134 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "contentops-mcp"
+version = "0.3.0"
+description = "MCP-native orchestrator for content operations with server registry and AI QA gate"
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "MIT"}
+authors = [
+    {name = "ContentOps", email = "hello@contentops.dev"}
+]
+keywords = ["mcp", "orchestration", "content-ops", "automation"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
+
+dependencies = [
+    "fastapi>=0.104.0",
+    "uvicorn[standard]>=0.24.0",
+    "sqlalchemy>=2.0.0",
+    "pydantic>=2.0.0",
+    "python-dotenv>=1.0.0",
+    "httpx>=0.25.0",
+    "pyyaml>=6.0.0",
+    "requests>=2.31.0",
+]
+
+[project.optional-dependencies]
+# Install adapters by content-stack vertical. The MCP server shims are bundled in this
+# package; extras install the runtime dependencies needed by each family.
+all = [
+    "contentops-mcp[cms,email,collab,quality,premium]"
+]
+
+cms = [
+    "httpx>=0.25.0",
+    "beautifulsoup4>=4.12.0",
+]
+
+email = [
+    "httpx>=0.25.0",
+]
+
+collab = [
+    "httpx>=0.25.0",
+]
+
+quality = [
+    "textstat>=0.7.3",
+    "beautifulsoup4>=4.12.0",
+]
+
+premium = [
+    "httpx>=0.25.0",
+]
+
+ghost = ["httpx>=0.25.0", "python-slugify>=8.0.0"]
+wordpress = ["httpx>=0.25.0", "python-slugify>=8.0.0", "beautifulsoup4>=4.12.0"]
+webflow = ["httpx>=0.25.0"]
+beehiiv = ["httpx>=0.25.0"]
+substack = ["httpx>=0.25.0", "beautifulsoup4>=4.12.0"]
+resend = ["httpx>=0.25.0"]
+loops = ["httpx>=0.25.0"]
+mailchimp = ["httpx>=0.25.0"]
+notion = ["httpx>=0.25.0"]
+linear = ["httpx>=0.25.0"]
+coda = ["httpx>=0.25.0"]
+slack = ["httpx>=0.25.0"]
+qa = ["textstat>=0.7.3", "beautifulsoup4>=4.12.0"]
+salesforce = ["httpx>=0.25.0"]
+hubspot = ["httpx>=0.25.0"]
+
+dev = [
+    "pytest>=7.4.0",
+    "pytest-cov>=4.1.0",
+    "black>=23.0.0",
+    "ruff>=0.1.0",
+    "mypy>=1.5.0",
+    "pre-commit>=3.4.0",
+]
+
+[project.urls]
+Homepage = "https://contentops.dev"
+Documentation = "https://docs.contentops.dev"
+Repository = "https://github.com/contentops/mcp-orchestrator"
+Issues = "https://github.com/contentops/mcp-orchestrator/issues"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["backend*", "registry*", "registry_api*", "mcp_servers*", "qa*"]
+
+[tool.black]
+line-length = 100
+target-version = ['py310']
+include = '\.pyi?$'
+extend-exclude = '''
+/(
+  # directories
+  \.eggs
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | build
+  | dist
+)/
+'''
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+select = ["E", "F", "W"]
+ignore = ["E501", "E203"]
+
+[tool.mypy]
+python_version = "3.10"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = false
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+addopts = "-v --cov=backend --cov-report=html"
