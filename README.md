@@ -16,7 +16,7 @@ Notion draft → WordPress draft → QA gate → publish → Slack update → em
 
 ---
 
-## What this is
+## 🚀 What this is
 
 ContentOps MCP Orchestrator is a **beginner-friendly, MCP-native workflow project** that shows how content teams can automate publishing — without losing quality control.
 
@@ -30,7 +30,7 @@ This project is also a **hands-on 7-day tutorial** for learning FastAPI, workflo
 
 ---
 
-## What this project does
+## ✨ What this project does
 
 This project helps content teams and developers automate publishing safely.
 
@@ -82,7 +82,7 @@ This turns the project from a simple workflow runner into a quality-aware conten
 
 ---
 
-## Architecture
+## 🏗️ Architecture
 
 ```mermaid
 flowchart TD
@@ -127,9 +127,9 @@ flowchart TD
     end
 
     subgraph UI["🖥️ Static UI"]
-        UW[/workflows — create + QA demo]
-        UR[/runs — step trace]
-        URG[/registry — catalog browse]
+        UW["/workflows — create + QA demo"]
+        UR["/runs — step trace"]
+        URG["/registry — catalog browse"]
     end
 
     N --> SC
@@ -173,7 +173,7 @@ sequenceDiagram
 
 ---
 
-## Features
+## 🌟 Features
 
 | Feature | Status | Description |
 |---------|--------|-------------|
@@ -195,7 +195,7 @@ sequenceDiagram
 
 ---
 
-## Quick start
+## ⚡ Quick start
 
 ### Prerequisites
 
@@ -239,7 +239,7 @@ Open `http://localhost:8000`
 
 ---
 
-## UI pages
+## 🖥️ UI pages
 
 | URL | Purpose |
 |-----|---------|
@@ -258,7 +258,7 @@ Open `http://localhost:8000`
 
 ---
 
-## QA gate
+## 🛡️ QA gate
 
 The QA gate is a **zero-cost, local scoring engine** with 11 specialized agents. No external LLM required.
 
@@ -290,6 +290,7 @@ The QA gate is a **zero-cost, local scoring engine** with 11 specialized agents.
     "Add more concrete examples for the target audience."
   ]
 }
+```
 ### Modes
 
 | Mode | Behavior |
@@ -309,7 +310,7 @@ qa-gate::send_to_editor_channel — route failed draft to review channel
 
 ---
 
-## Workflow DSL
+## 🔄 Workflow DSL
 
 Workflows are defined as YAML or JSON. Steps reference MCP servers by name; `input_map` templates pull values from trigger output and previous step output.
 
@@ -356,7 +357,7 @@ steps:
 
 ---
 
-## MCP server registry
+## 📚 MCP server registry
 
 The registry is a curated catalog of content-stack MCP servers. Browse at `/registry` or query via API.
 
@@ -481,7 +482,7 @@ This repo is a **7-day hands-on tutorial** for building a real MCP-native workfl
 
 ---
 
-### Day 1 — Plan before you code
+### 🧭 Day 1 — Plan before you code
 
 **Goal:** Understand the full system before touching code.
 
@@ -497,7 +498,7 @@ This repo is a **7-day hands-on tutorial** for building a real MCP-native workfl
 
 ---
 
-### Day 2 — Models and API skeleton
+### 🏗️ Day 2 — Models and API skeleton
 
 **Goal:** Database ORM models and REST routes wired up. No logic yet.
 
@@ -514,7 +515,7 @@ curl http://localhost:8000/health           # returns ok
 
 ---
 
-### Day 3 — Notion trigger and scheduler
+### ⏰ Day 3 — Notion trigger and scheduler
 
 **Goal:** System watches Notion and fires trigger events automatically.
 
@@ -528,7 +529,7 @@ curl http://localhost:8000/health           # returns ok
 
 ---
 
-### Day 4 — Steps: blog, Slack, email
+### 🔌 Day 4 — Steps: blog, Slack, email
 
 **Goal:** Three working async step functions with clear input/output contracts.
 
@@ -542,7 +543,7 @@ curl http://localhost:8000/health           # returns ok
 
 ---
 
-### Day 5 — Workflow engine and run tracing
+### ⚙️ Day 5 — Workflow engine and run tracing
 
 **Goal:** Runner executes steps in order, writes every state change to DB, halts on first failure.
 
@@ -561,7 +562,7 @@ Run (running) → RunStep 1 (pending→running→completed) → RunStep 2 (...) 
 
 ---
 
-### Day 6 — MCP executor and QA gate
+### 🛡️ Day 6 — MCP executor and QA gate
 
 **Goal:** Upgrade from legacy step runner to real MCP tool dispatch. Add the QA gate.
 
@@ -575,7 +576,7 @@ Run (running) → RunStep 1 (pending→running→completed) → RunStep 2 (...) 
 
 ---
 
-### Day 7 — Registry UI and full demo
+### 🎬 Day 7 — Registry UI and full demo
 
 **Goal:** Registry browser works. Full QA pass/fail demo works. Everything documented.
 
@@ -592,7 +593,7 @@ Run (running) → RunStep 1 (pending→running→completed) → RunStep 2 (...) 
 
 ---
 
-## Testing
+## 🧪 Testing
 
 ```bash
 # QA gate tests
@@ -626,7 +627,7 @@ See `UI_COMPILE_AND_TEST_INSTRUCTIONS.md` for the complete UI test checklist inc
 
 ---
 
-## Troubleshooting
+## 🔧 Troubleshooting
 
 | Problem | Fix |
 |---------|-----|
@@ -648,7 +649,7 @@ PRs welcome for:
 
 ---
 
-## Roadmap
+## 🗺️ Roadmap
 
 - [x] Phase 1: MVP orchestrator — Notion → blog → Slack → email
 - [x] Phase 2: MCP executor — real MCP server dispatch + local fallback
