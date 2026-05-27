@@ -239,17 +239,6 @@ Open `http://localhost:8000`
 
 ---
 
-## 🖥️ UI pages
-
-| URL | Purpose |
-|-----|---------|
-| `http://localhost:8000` | Home |
-| `http://localhost:8000/workflows` | Create workflows, run QA demo, test pass/fail |
-| `http://localhost:8000/workflows/qa-gate-demo` | Dedicated QA gate demo route |
-| `http://localhost:8000/runs` | Run history and step traces |
-| `http://localhost:8000/registry` | Browse MCP server catalog |
-| `http://localhost:8000/docs` | Swagger UI — all endpoints |
-
 ### Fastest test
 
 1. Open `http://localhost:8000/workflows`
@@ -424,20 +413,6 @@ python -m mcp_servers.wordpress_mcp.server   # port 8002
 
 ---
 
-## Key API endpoints
-
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| `POST` | `/mcp/workflows/execute` | Execute a workflow (YAML/JSON body) |
-| `GET` | `/mcp/resources/runs` | List all runs |
-| `GET` | `/mcp/resources/runs/{id}` | Get a run by ID |
-| `GET` | `/mcp/resources/runs/{id}/trace` | Full step-by-step trace |
-| `POST` | `/api/workflows` | Create a legacy workflow |
-| `GET` | `/api/workflows` | List legacy workflows |
-| `POST` | `/api/trigger` | Trigger a legacy workflow |
-| `GET` | `/registry/servers` | List registry servers |
-| `GET` | `/health` | Health check |
-
 ### Trigger the QA happy path
 
 ```bash
@@ -589,25 +564,6 @@ Run (running) → RunStep 1 (pending→running→completed) → RunStep 2 (...) 
 
 **Record a demo GIF** — browser + terminal side by side, 10–15 seconds.
 
-
-
----
-
-## 🧪 Testing
-
-```bash
-# QA gate tests
-pytest tests/test_qa_gate.py -v
-
-# Registry tests
-pytest tests/test_registry.py -v
-
-# Full app — see UI_COMPILE_AND_TEST_INSTRUCTIONS.md
-uvicorn backend.main:app --reload
-```
-
-See `UI_COMPILE_AND_TEST_INSTRUCTIONS.md` for the complete UI test checklist including pass/fail demos, registry filter testing, and curl examples for all MCP endpoints.
-
 ---
 
 ## How this differs from n8n, Zapier, and Make
@@ -624,19 +580,6 @@ See `UI_COMPILE_AND_TEST_INSTRUCTIONS.md` for the complete UI test checklist inc
 | Learning path | No tutorial | 7-day structured tutorial |
 
 > n8n moves data between apps. ContentOps checks whether content is ready before it moves.
-
----
-
-## 🔧 Troubleshooting
-
-| Problem | Fix |
-|---------|-----|
-| Server won't start | Run `pip install -e .[wordpress,resend,notion,slack,qa]` |
-| QA gate returns error | Check `backend/orchestrator/qa_gate.py` imports — DB deps are optional |
-| Registry page blank | Confirm `registry/servers.json` exists and is valid JSON |
-| MCP server not found | ServerRegistry falls back to local mock automatically — check logs for `[FALLBACK]` |
-| Notion polling not firing | Share your Notion integration with the database in Notion settings |
-| Email fails | Use Resend test address `delivered@resend.dev` to verify API key |
 
 ---
 
