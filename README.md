@@ -12,7 +12,22 @@ Notion draft → WordPress draft → QA gate → publish → Slack update → em
 [![MCP-Orchestration](https://img.shields.io/badge/workflows-MCP--Orchestration-orange.svg)](https://modelcontextprotocol.io/)
 [![ContentOps](https://img.shields.io/badge/AI--native-ContentOps-red.svg)](#)
 
-![Demo](docs/workflow.gif)
+<p align="center">
+  <img src="docs/banner.svg" alt="ContentOps MCP Orchestrator animated banner" width="860" />
+</p>
+
+<p align="center">
+  <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&size=20&pause=1000&center=true&vCenter=true&width=900&lines=Draft+%E2%86%92+QA+Gate+%E2%86%92+Publish;Notion+%E2%86%92+WordPress+%E2%86%92+Slack+%E2%86%92+Email;MCP-native+tool+mesh+architecture;Full+run+tracing+for+every+step" alt="Typing animation for ContentOps MCP workflow" />
+</p>
+
+<p align="center">
+  <img src="./docs/workflow.gif" alt="ContentOps workflow demo GIF" width="900" />
+</p>
+
+---
+## 🎥 Interactive Demo Flow
+
+> ✨ Watch the workflow move from draft → QA gate → publish → Slack/email notifications in real time.
 
 ---
 
