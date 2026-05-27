@@ -1,0 +1,24 @@
+<svg width="860" height="120" viewBox="0 0 860 120" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#f9c6d0">
+        <animate attributeName="stop-color"
+          values="#f9c6d0;#f7d6e0;#e8d5f5;#c9e8f9;#c5f0e8;#fde9c5;#f9c6d0"
+          dur="6s" repeatCount="indefinite"/>
+      </stop>
+      <stop offset="50%" stop-color="#e8d5f5">
+        <animate attributeName="stop-color"
+          values="#e8d5f5;#c9e8f9;#c5f0e8;#fde9c5;#f9c6d0;#f7d6e0;#e8d5f5"
+          dur="6s" repeatCount="indefinite"/>
+      </stop>
+      <stop offset="100%" stop-color="#c9e8f9">
+        <animate attributeName="stop-color"
+          values="#c9e8f9;#c5f0e8;#fde9c5;#f9c6d0;#f7d6e0;#e8d5f5;#c9e8f9"
+          dur="6s" repeatCount="indefinite"/>
+      </stop>
+    </linearGradient>
+  </defs>
+  <rect width="860" height="120" rx="16" fill="url(#bg)"/>
+  <text x="430" y="58" text-anchor="middle" font-family="Segoe UI,Helvetica,Arial,sans-serif" font-size="34" font-weight="700" fill="#6b3a5a" opacity="0.85">ContentOps MCP Orchestrator</text>
+  <text x="430" y="88" text-anchor="middle" font-family="Segoe UI,Helvetica,Arial,sans-serif" font-size="14" fill="#6b3a5a" opacity="0.65">MCP-native workflow engine for safe AI content publishing</text>
+</svg>
