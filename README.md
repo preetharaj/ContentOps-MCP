@@ -78,8 +78,6 @@ The project adds two important layers:
 
 This turns the project from a simple workflow runner into a quality-aware content operations platform.
 
-![Demo](docs/MCP-registry.gif)
-
 ---
 
 ## 🏗️ Architecture
@@ -299,53 +297,6 @@ qa-gate::send_to_editor_channel — route failed draft to review channel
 
 ---
 
-## 🔄 Workflow DSL
-
-Workflows are defined as YAML or JSON. Steps reference MCP servers by name; `input_map` templates pull values from trigger output and previous step output.
-
-```yaml
-# spec/workflow_dml.yaml.example
-workflow: draft-to-publish-with-qa-gate
-trigger:
-  server: notion-mcp
-  tool: get_pages
-  params:
-    database_id: $NOTION_EDITORIAL_DB
-steps:
-  - server: wordpress-mcp
-    tool: create_draft
-    input_map:
-      title: "{trigger.pages[0].title}"
-      content: "{trigger.pages[0].body}"
-  - server: qa-gate
-    tool: run_check
-    input_map:
-      title: "{trigger.pages[0].title}"
-      content: "{trigger.pages[0].body}"
-      meta_description: "{trigger.pages[0].meta_description}"
-      draft_url: "{steps[0].url}"
-      target_audience: "technical content operators"
-      brand_rubric: "Clear, practical, non-hype, specific examples."
-      mode: "manual_approval"
-  - server: wordpress-mcp
-    tool: publish_post
-    input_map:
-      post_id: "{steps[0].post_id}"
-      qa_passed: "{steps[1].passed}"
-  - server: slack-mcp
-    tool: post_message
-    input_map:
-      channel: "#content-team"
-      text: "Published: {steps[2].url}"
-  - server: resend-mcp
-    tool: send_email
-    input_map:
-      to: "team@example.com"
-      subject: "Published after QA: {trigger.pages[0].title}"
-```
-
----
-
 ## 📚 MCP server registry
 
 The registry is a curated catalog of content-stack MCP servers. Browse at `/registry` or query via API.
@@ -374,6 +325,8 @@ pip install contentops-mcp[ghost]
 pip install contentops-mcp[beehiiv]
 pip install contentops-mcp[wordpress,resend,notion,slack,qa]
 ```
+
+![Demo](docs/MCP-registry.gif)
 
 ### Registry API
 
